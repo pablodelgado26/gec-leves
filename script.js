@@ -121,7 +121,7 @@ function detailEd() {
   ${hasAl(id) ? `<div class="alb sm">🚨 ${id} pediu ajuda ${ago(alerts[id].t)}</div><button data-a="alno" data-id="${id}" style="margin:8px 0">Atendido: limpar alerta</button>` : ""}
   ${done(id) ? `<div class="alb ok" style="margin:8px 0">✅ ${id} avisou que terminou a peça ${esc(c.atual)}. Toque em Concluir e avançar.</div>` : ""}
   <div class="atual"><small>Peça atual</small><b>${c.atual ? esc(c.atual) : "—"}</b></div>
-  <div class="fila">Próximas: ${c.fila.length ? c.fila.map((p, k) => `<span>${esc(p)} <button data-a="rm" data-id="${id}" data-k="${k}" title="Tirar da fila" style="padding:4px 10px;border:0;background:transparent;color:var(--red);font-weight:700;font-size:18px;line-height:1">✕</button></span>`).join("") : "nenhuma na fila"}</div>
+  <div class="fila">Próximas: ${c.fila.length ? c.fila.map((p, k) => `<span class="fila-item"><span class="fila-num">${esc(p)}</span><button class="fila-move" data-a="up" data-id="${id}" data-k="${k}" aria-label="Mover peça ${esc(p)} uma posição para frente" title="Mover para frente" ${k === 0 ? "disabled" : ""}>↑</button><button class="fila-move" data-a="down" data-id="${id}" data-k="${k}" aria-label="Mover peça ${esc(p)} uma posição para trás" title="Mover para trás" ${k === c.fila.length - 1 ? "disabled" : ""}>↓</button><button class="fila-remove" data-a="rm" data-id="${id}" data-k="${k}" aria-label="Tirar peça ${esc(p)} da fila" title="Tirar da fila">✕</button></span>`).join("") : "nenhuma na fila"}</div>
   <div class="row"><input data-id="${id}" placeholder="Nº da peça (ex.: 002)"></div>
   <div class="row"><button data-a="set" data-id="${id}">Definir agora</button><button data-a="add" data-id="${id}">+ Fila</button></div>
   <button class="p" data-a="next" data-id="${id}" ${canAdvance ? "" : "disabled"}>${c.atual ? "Concluir e avançar" : "Iniciar próxima da fila"}</button>
@@ -181,8 +181,16 @@ g.addEventListener("click", e => {
   } else if (a === "clr") {
     c.feitas = [];
     save(id, c);
+  } else if (a === "up" || a === "down") {
+    const from = Number(b.dataset.k);
+    const to = from + (a === "up" ? -1 : 1);
+    if (!Number.isInteger(from) || from < 0 || from >= c.fila.length || to < 0 || to >= c.fila.length) return;
+    [c.fila[from], c.fila[to]] = [c.fila[to], c.fila[from]];
+    save(id, c);
   } else if (a === "rm") {
-    c.fila.splice(+b.dataset.k, 1);
+    const index = Number(b.dataset.k);
+    if (!Number.isInteger(index) || index < 0 || index >= c.fila.length) return;
+    c.fila.splice(index, 1);
     save(id, c);
   }
 });

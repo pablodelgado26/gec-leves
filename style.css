@@ -244,13 +244,45 @@ h1 {
   overflow-wrap: anywhere;
 }
 
-.fila span {
+.fila > span {
   display: inline-block;
   margin: 0 4px 4px 0;
   padding: 2px 8px;
   border-radius: 8px;
   background: var(--chip);
   color: var(--tx);
+}
+
+.fila > .fila-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px 4px 3px 8px;
+  vertical-align: middle;
+}
+
+.fila-item .fila-num {
+  overflow-wrap: anywhere;
+}
+
+.fila-item button.fila-move,
+.fila-item button.fila-remove {
+  min-width: 30px;
+  min-height: 30px;
+  padding: 2px 6px;
+  border: 0;
+  background: transparent;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.fila-item button.fila-move {
+  color: var(--ac);
+}
+
+.fila-item button.fila-remove {
+  color: var(--red);
+  font-size: 16px;
 }
 
 .prox {
